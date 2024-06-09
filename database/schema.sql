@@ -31,3 +31,7 @@ CREATE TABLE IF NOT EXISTS histories (
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL
 );
+
+CREATE UNIQUE INDEX IF NOT EXISTS artists_english_name_unique_idx ON artists(english_name);
+CREATE UNIQUE INDEX IF NOT EXISTS groups_english_name_unique_idx ON groups(english_name);
+CREATE UNIQUE INDEX IF NOT EXISTS series_english_name_unique_idx ON series(english_name);

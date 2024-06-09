@@ -1,7 +1,8 @@
 {
   "scripts": {
     "dev": "wrangler dev src/index.ts",
-    "deploy": "wrangler deploy --minify src/index.ts"
+    "deploy": "wrangler deploy --minify src/index.ts",
+    "db:migrate": "wrangler d1 execute translation_db --file=./database/schema.sql --remote"
   },
   "dependencies": {
     "hono": "^4.4.4"
