@@ -16,3 +16,22 @@ groups.get("/:name", async (c) => {
     return c.json({ err: e }, 500)
   }
 })
+
+groups.post("/", async (c) => {
+  try {
+    const body = await c.req.json()
+    const { englishName, japaneseName } = body
+
+    const now = new Date().toISOString()
+    const query = `INSERT INTO groups (english_name, japanese_name, updated_at) VALUES (?, ?, ?)
+        ON CONFLICT (english_name) DO UPDATE SET japanese_name = ?, updated_at = ?`
+    await c.env.TRANSLATION_DB.prepare(query)
+           .bind(englishName, japaneseName, now, japaneseName, now)
+           .run()
+
+    return c.json({ result: "ok" })
+  } catch (e) {
+    console.log(e)
+    return c.json({ result: "error" }, 500)
+  }
+})
