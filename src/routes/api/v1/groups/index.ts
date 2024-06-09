@@ -1,5 +1,6 @@
 import { Hono } from "hono"
 import type { Bindings } from "../../../../types"
+import { recordHistory } from "../../../../common/recordHistories"
 
 export const groups = new Hono<{ Bindings: Bindings }>()
 
@@ -28,6 +29,7 @@ groups.post("/", async (c) => {
     await c.env.TRANSLATION_DB.prepare(query)
            .bind(englishName, japaneseName, now, japaneseName, now)
            .run()
+    await recordHistory(c.env.TRANSLATION_DB, englishName, japaneseName, "groups", c.req.header("CF-Connecting-IP"), now)
 
     return c.json({ result: "ok" })
   } catch (e) {
