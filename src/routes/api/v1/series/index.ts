@@ -19,6 +19,24 @@ series.get("/:name", async (c) => {
   }
 })
 
+series.post("/batch/fetch", async (c) => {
+  try {
+    const names = await c.req.json()
+    const placeholders = new Array(names.length).fill("?").join(",")
+
+    const { results } = await c.env.TRANSLATION_DB.prepare(`SELECT * FROM series WHERE english_name IN (${placeholders})`)
+                               .bind(...names)
+                               .all()
+    const output = results.reduce((acc, value) => {
+      return { ...acc, [value.english_name]: value.japanese_name }
+    }, {})
+    return c.json(output)
+  } catch (e) {
+    console.log(e)
+    return c.json({ err: e }, 500)
+  }
+})
+
 series.post("/", async (c) => {
   try {
     const body = await c.req.json()
